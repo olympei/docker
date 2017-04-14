@@ -153,6 +153,13 @@ Last login: Fri Apr 14 18:15:41 2017
 -bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
 udemy@42b334259ceb:~$ 
 
+
+###########################################################
+# Setup Nodejs with supervisor config:
+###########################################################
+~/.bashrc
+alias nodehttpserver="docker run -d -p 50000:22 -p 59999:3000 -v /root/GIT/docker/mydockerbuild/ssh/debian/supervisor/nodejs/supervisor-config/:/etc/supervisor/conf.d/ debian/nodejs"
+
 ```
 
 
