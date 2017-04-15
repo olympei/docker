@@ -15,6 +15,9 @@ docker rmi $(docker images -f dangling=true -q)
 Remove all images :
 docker rmi $(docker images -a -q)
 
+Remove all stopped containers
+docker rm $(docker ps -a -q)
+
 Remove Issue :
 [root@devel ~/GIT/docker]# docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
