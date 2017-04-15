@@ -37,6 +37,30 @@ Deleted: sha256:fcb4581c4f016b2e9761f8f69239433e1e123d6f5234ca9c30c33eba698487cc
 Deleted: sha256:b53cd3273b78f7f9e7059231fe0a7ed52e0f8e3657363eb015c61b2a6942af87
 Deleted: sha256:745f5be9952c1a22dd4225ed6c8d7b760fe0d3583efd52f91992463b53f7aea3
 
+Docker Build Example :
+root@devel:~/GIT/docker/mydockerbuild/ssh (master) $docker build -t debian-ssh .
+root@devel:~/GIT/docker/mydockerbuild/ssh (master) $docker build -t debian-ssh:jessie .
+root@devel:~/GIT/docker/mydockerbuild/ssh/debian/supervisor (master) $docker build -t debian/supervisor .
+
+
+Keeping Docker running on host reboot
+Apparently, the current method to auto-start Docker containers (from Docker 1.2) is to use restart policies. 
+This will control how Docker should handle starting of the container upon startup and re-starting of the container when it exits. 
+I've used the 'always' option so far, and can confirm that it makes Docker auto-start the container at system boot:
+
+Syntax :
+docker run --restart=always -d myimage
+
+Example :
+docker run --restart=always -d -p 50000:22 thakker/supervisor
+
+Flag :
+--restart=always
+--restart=no (default)
+--restart=on-failure
+--restart=unless-stopped
+
+
 ```
 
 
