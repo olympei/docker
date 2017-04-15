@@ -61,6 +61,95 @@ Flag :
 --restart=unless-stopped
 
 
+###########################################################
+# Disabling root access :
+###########################################################
+
+$docker run -d -p 50000:22 debian/ssh:dockerfile
+
+root@devel:~ $docker ps
+CONTAINER ID        IMAGE                   COMMAND               CREATED             STATUS              PORTS                   NAMES
+a070065ccc9e        debian/ssh:dockerfile   "/usr/sbin/sshd -D"   6 seconds ago       Up 5 seconds        0.0.0.0:50000->22/tcp   dreamy_leakey
+
+
+root@devel:~ $ssh root@172.17.0.1 -p 50000
+root@172.17.0.1's password: 
+-bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+root@a070065ccc9e:~# 
+
+Require apt-get install sudo first from root.
+
+
+root@a070065ccc9e:~# adduser udemy
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = "en_US.UTF-8",
+	LANG = "en_US.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+Adding user `udemy' ...
+Adding new group `udemy' (1000) ...
+Adding new user `udemy' (1000) with group `udemy' ...
+Creating home directory `/home/udemy' ...
+Copying files from `/etc/skel' ...
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+Changing the user information for udemy
+Enter the new value, or press ENTER for the default
+	Full Name []: Udemy
+	Room Number []: 
+	Work Phone []: 
+	Home Phone []: 
+	Other []: 
+Is the information correct? [Y/n] Y
+
+
+root@a070065ccc9e:~# adduser udemy sudo
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = "en_US.UTF-8",
+	LANG = "en_US.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+Adding user `udemy' to group `sudo' ...
+Adding user udemy to group sudo
+Done.
+
+---------------------------------
+To exit and save your changes 
+---------------------------------
+
+root@devel:~ $docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                   NAMES
+42b334259ceb        debian/supervisor   "/usr/bin/supervis..."   4 minutes ago       Up 4 minutes        0.0.0.0:50000->22/tcp   quirky_euclid
+
+root@devel:~ $docker commit quirky_euclid debian/supervisor
+sha256:a14c15f7cece4c412a06fd41c7f0dbf4da26b4e9c34784996b1be5a0d7be5505
+root@devel:~ $
+
+###########################################################
+# Easy consistent login setup:
+###########################################################
+
+root@devel:~ $vim ~/.ssh/config 
+Host FirstContainer
+Hostname 172.17.0.1
+	User udemy
+	port 50000
+	StrictHostKeyChecking no
+	
+Test :
+root@devel:~ $FirstContainer
+-bash: FirstContainer: command not found
+root@devel:~ $ssh FirstContainer
+udemy@172.17.0.1's password: 
+Last login: Fri Apr 14 18:15:41 2017
+-bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+udemy@42b334259ceb:~$ 
+
 ```
 
 
