@@ -65,6 +65,18 @@ Flag :
 
 
 ###########################################################
+# Get docker ip address :
+###########################################################
+root@devel:~ $ifconfig
+docker0   Link encap:Ethernet  HWaddr 02:42:e6:c5:ea:d1  
+          inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:74390 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:87665 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:5871391 (5.5 MiB)  TX bytes:478211791 (456.0 MiB)
+
+###########################################################
 # Disabling root access :
 ###########################################################
 
@@ -159,6 +171,46 @@ udemy@42b334259ceb:~$
 ###########################################################
 ~/.bashrc
 alias nodehttpserver="docker run -d -p 50000:22 -p 59999:3000 -v /root/GIT/docker/mydockerbuild/ssh/debian/supervisor/nodejs/supervisor-config/:/etc/supervisor/conf.d/ debian/nodejs"
+
+
+###########################################################
+# Link between 2 docker, Nodejs with MongoDB
+###########################################################
+root@devel:~ $docker images
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+debian/mongodb           latest              69f7545f0cf4        51 minutes ago      487 MB
+debian/nodejs            latest              09a6b3a16ea6        About an hour ago   457 MB
+
+1. start mongodb
+root@devel:~ $docker run -d -p 27017 debian/mongodb
+2f8e6dec9366355fdb27ea8af7f10f28dbe61e13e8859f3f845d3153efb4aa5b
+root@devel:~ $docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                              NAMES
+2f8e6dec9366        debian/mongodb      "/bin/sh -c /usr/b..."   4 seconds ago       Up 3 seconds        22/tcp, 0.0.0.0:32770->27017/tcp   goofy_golick
+
+
+2. Link with nodejs
+$docker run -it -p 22 --link goofy_golick:mongodb debian/nodejs /bin/bash
+root@1dab19361de1:/# env
+HOSTNAME=1dab19361de1
+MONGODB_NAME=/determined_colden/mongodb
+MONGODB_PORT_27017_TCP=tcp://172.17.0.2:27017
+TERM=xterm
+MONGODB_PORT_22_TCP=tcp://172.17.0.2:22
+MONGODB_PORT=tcp://172.17.0.2:22
+MONGODB_PORT_27017_TCP_PORT=27017
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/
+MONGODB_PORT_27017_TCP_PROTO=tcp
+SHLVL=1
+HOME=/root
+NOTVISIBLE=in users profile
+MONGODB_PORT_27017_TCP_ADDR=172.17.0.2
+MONGODB_PORT_22_TCP_PORT=22
+MONGODB_PORT_22_TCP_PROTO=tcp
+MONGODB_ENV_NOTVISIBLE=in users profile
+MONGODB_PORT_22_TCP_ADDR=172.17.0.2
+_=/usr/bin/env
 
 ```
 
